@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adrian Javier Cano // Cyber Defense & AI Portfolio</title>
+  <meta name="description"
+    content="Portfolio de Adrian Javier Cano — Ciberseguridad defensiva, sistemas multi-agente de IA, derecho informático y desarrollo full-stack.">
+  <meta name="theme-color" content="#03070b">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Cybernetic Tactical Cursor HUD -->
+  <div class="cyber-cursor" id="cyberCursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring">
+      <span class="corner-tick tl"></span>
+      <span class="corner-tick tr"></span>
+      <span class="corner-tick bl"></span>
+      <span class="corner-tick br"></span>
+    </div>
+    <div class="cursor-label" id="cursorLabel">TARGET_LOCK</div>
+  </div>
+  <div class="cursor-trail" id="cursorTrail" aria-hidden="true"></div>
+
+  <!-- CRT Scanlines & Vignette Layer -->
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <!-- GLOBAL FULL-PAGE CYBER DEFENSE BACKGROUND CANVAS -->
+  <canvas id="net" aria-hidden="true"></canvas>
+
+  <!-- TOP HUD / TELEMETRY STATUS BAR -->
+  <div class="top-hud">
+    <div class="hud-left">
+      <div class="hud-pill">
+        <span class="hud-dot"></span>
+        <span>SOC_STATUS: <strong style="color:var(--green)">ACTIVE_DEFENSE</strong></span>
+      </div>
+      <div class="hud-pill hud-hide-mobile">
+        <span>DEFCON: <strong style="color:var(--amber)">2</strong></span>
+      </div>
+      <div class="hud-pill hud-hide-mobile">
+        <span>CIPHER: <strong style="color:var(--cyan)">AES-256-GCM</strong></span>
+      </div>
+    </div>
+    <div class="hud-right">
+      <div class="hud-pill hud-hide-mobile">
+        <span>NODE: <strong style="color:var(--text)">MDZ_AR (LAT: -32.889)</strong></span>
+      </div>
+      <button class="hud-btn" id="audioToggle" title="Activar/desactivar sintetizador sonoro táctico">AUDIO: <span
+          id="audioStatus">OFF</span></button>
+      <button class="hud-btn" id="canvasModeToggle" title="Cambiar modo de visualización de ciber-radar">RADAR: <span
+          id="canvasModeStatus">NET</span></button>
+      <button class="hud-btn hud-btn-danger" id="privescHudBtn"
+        title="Ejecutar simulación de escalada de privilegios Linux">⚡ ROOT_PRIVESC</button>
+    </div>
+  </div>
+
+  <!-- HEADER & NAVIGATION -->
+  <header>
+    <nav>
+      <a href="#top" class="logo" data-scramble="ADRIAN_CANO">
+        ADRIAN_CANO<span class="logo-cursor">█</span>
+        <span class="logo-badge">SEC_OPS</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks"
+        aria-label="Abrir menú de navegación">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#sobre-mi" data-scramble="[01. d_dossier]">[01. dossier]</a></li>
+        <li><a href="#habilidades" data-scramble="[02. matriz_def]">[02. capacidades]</a></li>
+        <li><a href="#proyectos" data-scramble="[03. operaciones]">[03. operaciones]</a></li>
+        <li><a href="#contacto" data-scramble="[04. canal_seguro]">[04. canal_seguro]</a></li>
+        <li>
+          <a class="gh-link" href="https://github.com/AdrianJavierCano" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            <span>GitHub</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- HERO SECTION WITH INTERACTIVE CYBER TERMINAL -->
+    <div class="hero" id="top">
+
+      <div class="hero-inner">
+        <div class="eyebrow">
+          <span class="dot"></span>
+          <span>SESIÓN TÁCTICA // HOST: SEC_NODE_01 — MENDOZA, AR</span>
+        </div>
+
+        <!-- INTERACTIVE TERMINAL HUD -->
+        <div class="terminal-container">
+          <div class="terminal">
+            <div class="term-bar">
+              <div class="term-controls">
+                <span></span><span></span><span></span>
+                <div class="term-title">adrian@soc-defense: ~/security_ops</div>
+              </div>
+              <div class="term-badge">CLI_ENABLED [v2.6]</div>
+            </div>
+
+            <div class="term-body" id="typedBody"></div>
+
+            <!-- CLI Interactive Input -->
+            <div class="term-input-row">
+              <span class="term-input-prompt">adrian@sec-ops:~$</span>
+              <input type="text" id="termCliInput" class="term-cli-input"
+                placeholder="escribe 'help', 'skills', 'projects', 'whoami', 'clear'..." autocomplete="off"
+                spellcheck="false">
+            </div>
+
+            <div class="term-hint">
+              <span>Tip: podés interactuar con la terminal o tipear <code>help</code>, <code>defense</code>,
+                <code>projects</code>, <code>contact</code>.</span>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="name glitch" data-scramble="ADRIAN JAVIER CANO">ADRIAN JAVIER CANO</h1>
+
+        <p class="tagline">
+          Especialista en <strong>Seguridad Defensiva (Blue Team)</strong>, arquitecturas <strong>Multi-Agente de
+            Inteligencia Artificial</strong>, desarrollo seguro de software y <strong>Derecho Informático</strong>.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#proyectos" class="btn-cyber primary" data-scramble="EXPLORAR OPERACIONES">
+            <span>▸ EXPLORAR OPERACIONES</span>
+          </a>
+          <a href="#contacto" class="btn-cyber secondary" data-scramble="TRANSMISIÓN SEGURA">
+            <span>🔒 TRANSMISIÓN SEGURA</span>
+          </a>
+          <button type="button" class="btn-cyber danger" id="btnLaunchPrivesc" data-scramble="⚡ PRIVESC SIM">
+            <span>💀 PRIVESC EXPLOIT</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 01. SOBRE MÍ // DOSSIER DE AGENTE / ANALISTA SOC -->
+    <section id="sobre-mi">
+      <div class="sec-head">
+        <span class="tag">$ cat dossier.log</span>
+        <h2><span class="n">01.</span> <span data-scramble="DOSSIER DE PERFIL">DOSSIER DE PERFIL</span></h2>
+        <button class="btn-cipher-toggle" id="btnDecryptBio" title="Re-cifrar/descifrar expediente"
+          data-scramble="[ RE-CIPHER ]">[ 🔒 RE-CIPHER ]</button>
+        <div class="rule"></div>
+      </div>
+
+      <div class="status-grid">
+        <!-- ID Badge Card -->
+        <div class="badge-card">
+          <div class="badge-card-header">
+            <span>CLEARANCE: <span class="sec-level">LEVEL 4 // BLUE_TEAM</span></span>
+            <span>ID: 0xADC</span>
+          </div>
+
+          <div class="photo-frame">
+            <div class="bio-scan-line" aria-hidden="true"></div>
+            <div class="bio-scan-hud"><span class="scan-dot"></span> FACE_ID: RECONOCIDO</div>
+            <div class="corner tl"></div>
+            <div class="corner tr"></div>
+            <div class="corner bl"></div>
+            <div class="corner br"></div>
+            <img id="profileImg" src="assets/foto.jpg" alt="Foto de perfil de Adrian Javier Cano">
+            <div class="ph-label" id="phLabel">[ AGENTE IDENTIFICADO // assets/foto.jpg ]</div>
+          </div>
+
+          <div class="badge-meta">
+            <div class="badge-meta-row">
+              <span>ESPECIALIDAD:</span>
+              <span>CYBER DEFENSE & AI</span>
+            </div>
+            <div class="badge-meta-row">
+              <span>JURISDICCIÓN:</span>
+              <span>ARGENTINA / GLOBAL</span>
+            </div>
+            <div class="badge-meta-row">
+              <span>FORMACIÓN:</span>
+              <span>IFTS29 · ABOGACÍA</span>
+            </div>
+            <div class="badge-meta-row">
+              <span>ESTADO:</span>
+              <span style="color:var(--green)">DISPONIBLE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio & Tactical Details -->
+        <div class="bio" id="bioContainer">
+          <div class="cipher-status-indicator" id="cipherStatusIndicator">
+            <span class="cipher-dot"></span> <span>ESTADO: <strong style="color:var(--green)">PAYLOAD_DESCIFRADO
+                [AES-256]</strong></span>
+          </div>
+          <p class="decrypt-bio-text"
+            data-original="Tecnólogo autodidacta y analista con mentalidad defensiva en el ecosistema informático. Apasionado por la convergencia entre la ciberseguridad ofensiva/defensiva, la ingeniería de sistemas multi-agente de IA, y los marcos normativos de derecho informático.">
+            Tecnólogo autodidacta y analista con mentalidad defensiva en el ecosistema informático. Apasionado por la
+            convergencia entre la <strong>ciberseguridad ofensiva/defensiva</strong>, la ingeniería de <strong>sistemas
+              multi-agente de IA</strong>, y los marcos normativos de <strong>derecho informático</strong>.
+          </p>
+          <p class="decrypt-bio-text"
+            data-original="Construyo herramientas de protección, auditoría y automatización inteligente. Mi enfoque une la práctica rigurosa en entornos de simulación táctica (Homelabs, TryHackMe, HackTheBox) con la formación académica en la carrera de Abogacía con orientación en Derecho Informático y la Tecnicatura en Desarrollo de Sistemas Web (Front End) en el IFTS29.">
+            Construyo herramientas de protección, auditoría y automatización inteligente. Mi enfoque une la práctica
+            rigurosa en entornos de simulación táctica (Homelabs, TryHackMe, HackTheBox) con la formación académica en
+            la carrera de <strong>Abogacía con orientación en Derecho Informático</strong> y la <strong>Tecnicatura en
+              Desarrollo de Sistemas Web (Front End) en el IFTS29</strong>.
+          </p>
+          <p class="decrypt-bio-text"
+            data-original="Capacidad comprobada para diseñar sistemas resilientes ante amenazas modernas, orquestar flujos autónomos de IA con routing local determinístico y garantizar el cumplimiento normativo legal-técnico.">
+            Capacidad comprobada para diseñar sistemas resilientes ante amenazas modernas, orquestar flujos autónomos de
+            IA con routing local determinístico y garantizar el cumplimiento normativo legal-técnico.
+          </p>
+
+          <!-- Stats / Metrics -->
+          <div class="bio-stats">
+            <div class="stat-box">
+              <div class="stat-val">100%</div>
+              <div class="stat-label">Enfoque en Seguridad & Resiliencia</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">Multi-LLM</div>
+              <div class="stat-label">Arquitecturas LangGraph & Ollama</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">Legal Tech</div>
+              <div class="stat-label">Derecho Tecnológico & Compliance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02. HABILIDADES // DEFENSIVE MATRIX -->
+    <section id="habilidades">
+      <div class="sec-head">
+        <span class="tag">$ nmap --capabilities -sV -p-</span>
+        <h2><span class="n">02.</span> <span data-scramble="MATRIZ DE CAPACIDADES">MATRIZ DE CAPACIDADES</span></h2>
+        <div class="matrix-hud-tag"><span class="hud-dot"></span> <span>SYS_READINESS: <strong
+              style="color:var(--green)">OPTIMAL [99.2%]</strong></span></div>
+        <div class="rule"></div>
+      </div>
+
+      <div class="skills-grid">
+        <!-- Category 1: Cyber Defense & Security Ops -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-title">
+              <span class="cat-code">[SEC_OPS_01]</span>
+              <span>Ciberseguridad Defensiva & Análisis</span>
+            </div>
+            <span class="skill-badge-level">LEVEL 4 // SOC</span>
+          </div>
+
+          <p class="skill-cat-desc">Protección activa, detección temprana, hardening de infraestructura y contención de
+            incidentes.</p>
+
+          <div class="skill-meter-wrap">
+            <div class="meter-label"><span>DEFENSE_INTEGRITY</span> <span>96%</span></div>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: 96%; background: var(--green);"></div>
+            </div>
+          </div>
+
+          <ul class="capabilities">
+            <li class="cap"><span class="cap-tag">[01]</span> Ciberseguridad Defensiva (Blue Team)</li>
+            <li class="cap"><span class="cap-tag">[02]</span> Ciberseguridad Ofensiva & Pentesting</li>
+            <li class="cap"><span class="cap-tag">[03]</span> Hardening de Servidores & Linux Security</li>
+            <li class="cap"><span class="cap-tag">[04]</span> Monitoreo SOC & Análisis SIEM / Logs</li>
+            <li class="cap"><span class="cap-tag">[05]</span> Homelab & Parrot OS / Kali Linux</li>
+            <li class="cap"><span class="cap-tag">[06]</span> Protocolos Seguros & Criptografía Básica</li>
+          </ul>
+        </div>
+
+        <!-- Category 2: AI & Multi-Agent Architectures -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-title">
+              <span class="cat-code">[AI_OPS_02]</span>
+              <span>IA & Sistemas Multi-Agente</span>
+            </div>
+            <span class="skill-badge-level"
+              style="color:var(--cyan); border-color:var(--cyan); background:rgba(0,240,255,0.08);">AUTONOMOUS</span>
+          </div>
+
+          <p class="skill-cat-desc">Orquestación de flujos multi-modelo, bases vectoriales y gates de validación
+            determinística.</p>
+
+          <div class="skill-meter-wrap">
+            <div class="meter-label"><span>AI_ORCHESTRATION</span> <span>94%</span></div>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: 94%; background: var(--cyan);"></div>
+            </div>
+          </div>
+
+          <ul class="capabilities">
+            <li class="cap"><span class="cap-tag">[01]</span> Arquitecturas LangGraph & LangChain</li>
+            <li class="cap"><span class="cap-tag">[02]</span> Routing Local & Modelos con Ollama</li>
+            <li class="cap"><span class="cap-tag">[03]</span> Bases Vectoriales (LanceDB / Chroma)</li>
+            <li class="cap"><span class="cap-tag">[04]</span> Pipelines RAG (Retrieval-Augmented Gen)</li>
+            <li class="cap"><span class="cap-tag">[05]</span> Agentes Autónomos Multi-LLM & Failover</li>
+            <li class="cap"><span class="cap-tag">[06]</span> AI Red Teaming & Prompt Defense</li>
+          </ul>
+        </div>
+
+        <!-- Category 3: Legal Tech & Informatic Law -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-title">
+              <span class="cat-code">[LAW_TECH_03]</span>
+              <span>Derecho Informático & Legal Tech</span>
+            </div>
+            <span class="skill-badge-level"
+              style="color:var(--amber); border-color:var(--amber); background:rgba(255,183,0,0.08);">COMPLIANCE</span>
+          </div>
+
+          <p class="skill-cat-desc">Marco regulatorio tecnológico, preservación de evidencia digital y protección de
+            datos.</p>
+
+          <div class="skill-meter-wrap">
+            <div class="meter-label"><span>LEGAL_COMPLIANCE</span> <span>95%</span></div>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: 95%; background: var(--amber);"></div>
+            </div>
+          </div>
+
+          <ul class="capabilities">
+            <li class="cap"><span class="cap-tag">[01]</span> Cadena de Custodia & Evidencia Digital</li>
+            <li class="cap"><span class="cap-tag">[02]</span> Protección de Datos Personales (Habeas Data)</li>
+            <li class="cap"><span class="cap-tag">[03]</span> Compliance & Auditoría de Sistemas</li>
+            <li class="cap"><span class="cap-tag">[04]</span> Automatización Jurídica Legal Tech</li>
+            <li class="cap"><span class="cap-tag">[05]</span> Recuperación Jurisprudencial (InfoLeg / SAIJ)</li>
+          </ul>
+        </div>
+
+        <!-- Category 4: Secure Web & Fullstack Engineering -->
+        <div class="skill-category">
+          <div class="skill-cat-header">
+            <div class="skill-cat-title">
+              <span class="cat-code">[DEV_STACK_04]</span>
+              <span>Desarrollo Web & Cloud Seguro</span>
+            </div>
+            <span class="skill-badge-level"
+              style="color:var(--purple); border-color:var(--purple); background:rgba(168,85,247,0.08);">SEC_DEV</span>
+          </div>
+
+          <p class="skill-cat-desc">Construcción de interfaces resilientes, microservicios y scripting táctico de
+            automatización.</p>
+
+          <div class="skill-meter-wrap">
+            <div class="meter-label"><span>STACK_EFFICIENCY</span> <span>98%</span></div>
+            <div class="meter-bar">
+              <div class="meter-fill" style="width: 98%; background: var(--purple);"></div>
+            </div>
+          </div>
+
+          <ul class="capabilities">
+            <li class="cap"><span class="cap-tag">[01]</span> HTML5 Semántico / CSS3 Táctico / Vanilla JS</li>
+            <li class="cap"><span class="cap-tag">[02]</span> Node.js & TypeScript</li>
+            <li class="cap"><span class="cap-tag">[03]</span> Python para Scripting & Automatización</li>
+            <li class="cap"><span class="cap-tag">[04]</span> Google Cloud Platform (GCP) & APIs</li>
+            <li class="cap"><span class="cap-tag">[05]</span> Git & Control de Versiones Táctico</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. PROYECTOS // THREAT OPERATIONS -->
+    <section id="proyectos">
+      <div class="sec-head">
+        <span class="tag">$ ls -la /classified_ops/</span>
+        <h2><span class="n">03.</span> <span data-scramble="OPERACIONES & PROYECTOS">OPERACIONES & PROYECTOS</span></h2>
+        <div class="rule"></div>
+      </div>
+
+      <div class="cases">
+        <!-- Case 1: JARVIS Cyber -->
+        <article class="case">
+          <div>
+            <div class="case-id">// CLASSIFIED_OP #001</div>
+            <div class="case-top">
+              <h3 data-scramble="JARVIS Cyber">JARVIS Cyber</h3>
+              <span class="status-pill dev">en desarrollo</span>
+            </div>
+            <p>
+              Asistente multi-agente de ciberseguridad para entrenamiento y auditoría en homelab (TryHackMe /
+              HackTheBox). Implementa arquitectura LangGraph con routing local determinístico vía Ollama y políticas de
+              seguridad por capas.
+            </p>
+          </div>
+          <div class="stack">
+            <span>LangGraph</span>
+            <span>Ollama</span>
+            <span>SQLite</span>
+            <span>LanceDB</span>
+            <span>Parrot OS</span>
+            <span>Python</span>
+          </div>
+        </article>
+
+        <!-- Case 2: Automaton+ -->
+        <article class="case">
+          <div>
+            <div class="case-id">// CLASSIFIED_OP #002</div>
+            <div class="case-top">
+              <h3 data-scramble="Automaton+">Automaton+</h3>
+              <span class="status-pill dev">en desarrollo</span>
+            </div>
+            <p>
+              Agente autónomo multi-LLM con routing determinístico, compuerta de verificación de salidas (verification
+              gates) y tolerancia a fallos con failover inteligente entre distintos proveedores de modelos.
+            </p>
+          </div>
+          <div class="stack">
+            <span>Node.js</span>
+            <span>TypeScript</span>
+            <span>Multi-LLM</span>
+            <span>Failover Gate</span>
+          </div>
+        </article>
+
+        <!-- Case 3: Themis AI -->
+        <article class="case">
+          <div>
+            <div class="case-id">// CLASSIFIED_OP #003</div>
+            <div class="case-top">
+              <h3 data-scramble="Themis AI">Themis AI</h3>
+              <span class="status-pill done">operativo</span>
+            </div>
+            <p>
+              Plataforma legal tech para derecho argentino: recuperación de jurisprudencia, redacción automatizada de
+              demandas y revisión exhaustiva de contratos mediante pipeline multi-agente conectado a InfoLeg y SAIJ.
+            </p>
+          </div>
+          <div class="stack">
+            <span>Gemini</span>
+            <span>RAG</span>
+            <span>Multi-Agente</span>
+            <span>Legal Tech</span>
+            <span>InfoLeg API</span>
+          </div>
+        </article>
+
+        <!-- Case 4: Mendoza Public Integrity Monitor -->
+        <article class="case">
+          <div>
+            <div class="case-id">// CLASSIFIED_OP #004</div>
+            <div class="case-top">
+              <h3 data-scramble="Public Integrity Monitor">Mendoza Integrity Monitor</h3>
+              <span class="status-pill done">operativo</span>
+            </div>
+            <p>
+              Sistema de transparencia y monitoreo de integridad pública institucional con análisis cruzado de datos
+              bajo normativa argentina y estándares internacionales de anticorrupción OCDE.
+            </p>
+          </div>
+          <div class="stack">
+            <span>Google Cloud</span>
+            <span>Data Governance</span>
+            <span>Compliance</span>
+            <span>OCDE Standards</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 04. CONTACTO // ENCRYPTED COMMS CHANNEL -->
+    <section id="contacto">
+      <div class="sec-head">
+        <span class="tag">$ nc -zv secure_channel 443</span>
+        <h2><span class="n">04.</span> <span data-scramble="CANAL DE TRANSMISIÓN SEGURA">CANAL DE TRANSMISIÓN
+            SEGURA</span></h2>
+        <div class="rule"></div>
+      </div>
+
+      <div class="contact-container">
+        <!-- Contact Form -->
+        <form class="contact-form" id="contactForm" action="#" method="POST">
+          <div class="field">
+            <label for="nombre"><span>Nombre / Identificador</span> <span class="f-tag">[REQ]</span></label>
+            <input type="text" id="nombre" name="nombre" placeholder="ej. Elliot Alderson" required autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="email"><span>Canal de Retorno (Email)</span> <span class="f-tag">[E2EE]</span></label>
+            <input type="email" id="email" name="email" placeholder="ej. usuario@dominio.com" required
+              autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="mensaje"><span>Cuerpo del Mensaje / Payload</span> <span class="f-tag">[AES-256]</span></label>
+            <textarea id="mensaje" name="mensaje" rows="5"
+              placeholder="Ingresa los requerimientos del proyecto, consulta de seguridad o propuesta..."
+              required></textarea>
+          </div>
+
+          <button type="submit" class="btn-cyber primary" id="submitBtn" data-scramble="TRANSMITIR PAQUETE">
+            <span>🔒 ENVIAR TRANSMISIÓN</span>
+          </button>
+
+          <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Channels & Direct Access -->
+        <div class="comms-info">
+          <div class="comms-box">
+            <h3><span>📡</span> Puntos de Enlace Directo</h3>
+            <p>
+              Para consultas de consultoría en seguridad defensiva, colaboraciones en IA, legal tech o proyectos de
+              software seguro, utilizá las siguientes vías directas:
+            </p>
+
+            <div class="channels">
+              <a class="channel" href="mailto:canoadrianjavier@gmail.com">
+                <span>canoadrianjavier@gmail.com</span>
+                <span class="ch-proto">MAILTO // ENCRYPTED</span>
+              </a>
+              <a class="channel" href="https://github.com/AdrianJavierCano" target="_blank" rel="noopener noreferrer">
+                <span>github.com/AdrianJavierCano</span>
+                <span class="ch-proto">HTTPS // SEC_REPO</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="comms-box" style="border-left: 3px solid var(--amber);">
+            <div
+              style="font-family:var(--mono); font-size:0.78rem; color:var(--amber); margin-bottom:6px; font-weight:700;">
+              [!] DIRECTIVAS DE OPERACIÓN
+            </div>
+            <p style="font-size:0.84rem; margin-bottom:0;">
+              Garantía de confidencialidad en comunicaciones técnicas y cumplimiento estricto de principios de
+              divulgación responsable y protección de datos personales.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <span>© 2026 Adrian Javier Cano — SEC_NODE // MENDOZA, AR</span>
+    </div>
+    <a class="footer-gh" href="https://github.com/AdrianJavierCano" target="_blank" rel="noopener noreferrer">
+      <span>[ github.com/AdrianJavierCano ]</span>
+    </a>
+  </footer>
+
+  <!-- LINUX PRIVILEGE ESCALATION EXPLOIT SIMULATION MODAL -->
+  <div class="privesc-modal-overlay" id="privescModal" aria-hidden="true">
+    <div class="privesc-window">
+      <div class="privesc-header">
+        <div class="privesc-title">
+          <span class="skull-pulse">💀</span>
+          <span>LAB // LINUX_PRIVESC_EXPLOIT.sh — [TARGET: VULN-SRV-01]</span>
+        </div>
+        <button class="privesc-close" id="closePrivescModal" aria-label="Cerrar modal">&times;</button>
+      </div>
+
+      <div class="privesc-body" id="privescTerminalBody"></div>
+
+      <!-- HACKED RED ALERT BREACH BANNER -->
+      <div class="system-hacked-banner" id="hackedBanner" style="display:none;">
+        <div class="hacked-glitch">⚠️ SYSTEM COMPROMISED // ROOT ACCESS GRANTED ⚠️</div>
+        <div class="hacked-sub">UID: 0(root) | GID: 0(root) | KERNEL EXPLOIT: SUCCESSFUL | SHELL: /bin/bash (ROOT)</div>
+      </div>
+
+      <div class="privesc-footer">
+        <span class="status-indicator-text" id="privescStatusText">STATUS: LISTO PARA EJECUTAR</span>
+        <button type="button" class="btn-cyber primary btn-sm" id="btnRestartPrivesc">RE-EJECUTAR EXPLOIT</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
