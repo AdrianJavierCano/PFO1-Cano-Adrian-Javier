@@ -4,7 +4,7 @@ Landing de presentación personal desarrollada para la materia **Desarrollo de S
 
 - **Autor:** Adrian Javier Cano
 - **GitHub:** https://github.com/AdrianJavierCano
-- **URL de Vercel:** _[completar después de desplegar]_
+- **URL de Vercel:** https://pfo-1-cano-adrian-javier.vercel.app/
 
 ## Descripción
 
