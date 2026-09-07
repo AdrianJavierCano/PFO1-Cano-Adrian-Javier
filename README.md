@@ -34,7 +34,7 @@ La landing presenta mi perfil (nombre, presentación, habilidades), una sección
 ├── styles.css
 ├── script.js
 ├── assets/
-│   └── foto.jpg   (agregar tu foto acá con ese nombre)
+│   └── foto.jpg 
 └── README.md
 ```
 
