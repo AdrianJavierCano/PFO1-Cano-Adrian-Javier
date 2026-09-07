@@ -40,4 +40,4 @@ La landing presenta mi perfil (nombre, presentación, habilidades), una sección
 
 ## Cómo correrlo localmente
 
-Abrir `index.html` directamente en el navegador, o servirlo con cualquier servidor estático (por ejemplo `npx serve .`).
+Abrir `index.html` directamente en el navegador, o servirlo con cualquier servidor estático (por ejemplo `npx serve .`). Sino al costado derecho del repositorio, esta el link al deploy hecho en vercel. En la columna about, Primero pfo frontend, debajo esta link.
