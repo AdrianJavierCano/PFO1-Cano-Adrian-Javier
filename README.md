@@ -16,7 +16,7 @@ La landing presenta mi perfil (nombre, presentación, habilidades), una sección
 - **Tipografía:** Google Fonts — JetBrains Mono (display/datos) e IBM Plex Sans (cuerpo de texto), IBM Plex Mono para etiquetas.
 - **Layout:** Flexbox para nav y listas de habilidades/canales; CSS Grid para la sección "sobre mí" y la grilla de proyectos (`auto-fit`), con breakpoints responsive.
 - **Animación:** efecto de tipeo (typewriter) en la terminal del hero, fondo de red de nodos animado en `<canvas>`, transiciones en hover de tarjetas y botones. Se respeta `prefers-reduced-motion`.
-- **Formulario:** campos con `label` asociado (`nombre`, `email`, `mensaje`), validación nativa HTML5 y confirmación por JavaScript (sin backend).
+- **Formulario:** campos con `label` asociado (`nombre`, `email`, `mensaje`), validación nativa HTML5 y apertura de un correo `mailto:` prellenado (sin backend).
 - **GitHub:** enlace visible en el nav (desktop) y en el footer, con `target="_blank"` y `rel="noopener noreferrer"`.
 - **Imagen de perfil:** `<img>` con `alt` descriptivo; si `assets/foto.jpg` no está presente, se muestra un placeholder (no rompe el layout).
 

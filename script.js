@@ -302,6 +302,7 @@ const btnLaunchPrivesc = document.getElementById('btnLaunchPrivesc');
 const privescHudBtn = document.getElementById('privescHudBtn');
 const closePrivescModal = document.getElementById('closePrivescModal');
 const btnRestartPrivesc = document.getElementById('btnRestartPrivesc');
+let lastFocusedElement = null;
 
 const privescExploitSequence = [
   { text: 'adrian@victim-srv-01:~$ whoami && id', cls: 'prompt', delay: 350 },
@@ -322,9 +323,11 @@ let privescTimeout = null;
 
 function openPrivescLab() {
   if (!privescModal) return;
+  lastFocusedElement = document.activeElement;
   initAudio();
   privescModal.classList.add('active');
   privescModal.setAttribute('aria-hidden', 'false');
+  closePrivescModal?.focus();
   runPrivescExploit();
 }
 
@@ -333,6 +336,7 @@ function closePrivescLab() {
   privescModal.classList.remove('active');
   privescModal.setAttribute('aria-hidden', 'true');
   clearTimeout(privescTimeout);
+  if (lastFocusedElement instanceof HTMLElement) lastFocusedElement.focus();
 }
 
 function runPrivescExploit() {
@@ -378,7 +382,26 @@ if (privescModal) {
   });
 }
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closePrivescLab();
+  if (!privescModal?.classList.contains('active')) return;
+  if (e.key === 'Escape') {
+    closePrivescLab();
+    return;
+  }
+  if (e.key === 'Tab') {
+    const focusable = privescModal.querySelectorAll(
+      'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 });
 
 // --- 8. INTERACTIVE CLI TERMINAL ENGINE ---
@@ -441,9 +464,19 @@ function printToTerminal(htmlContent) {
   typedBody.scrollTop = typedBody.scrollHeight;
 }
 
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }[character]));
+}
+
 function processCommand(rawCmd) {
   const cmd = rawCmd.trim().toLowerCase();
-  printToTerminal(`<span class="prompt">adrian@sec-ops:~$ ${rawCmd}</span>`);
+  printToTerminal(`<span class="prompt">adrian@sec-ops:~$ ${escapeHTML(rawCmd)}</span>`);
 
   if (!cmd) return;
   playCyberBeep(1100, 'triangle', 0.04, 0.04);
@@ -544,7 +577,7 @@ function processCommand(rawCmd) {
       break;
 
     default:
-      printToTerminal(`<span class="out" style="color:var(--danger)">[!] Comando no reconocido: '${rawCmd}'. Escribe '<strong>help</strong>' para consultar el manual.</span>`);
+      printToTerminal(`<span class="out" style="color:var(--danger)">[!] Comando no reconocido: '${escapeHTML(rawCmd)}'. Escribe '<strong>help</strong>' para consultar el manual.</span>`);
   }
 }
 
@@ -818,30 +851,32 @@ const submitBtn = document.getElementById('submitBtn');
 if (form) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!form.checkValidity()) {
-      formNote.textContent = '[!] ERROR EN EL PAYLOAD: Faltan campos requeridos.';
+    if (!form.reportValidity()) {
+      const invalidField = form.querySelector(':invalid');
+      invalidField?.focus();
+      formNote.textContent = '[!] Revisá los campos marcados y completá la información requerida.';
       formNote.style.color = 'var(--danger)';
       playCyberBeep(400, 'sawtooth', 0.1, 0.05);
       return;
     }
 
-    const pseudoHash = Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    const name = document.getElementById('nombre').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('mensaje').value.trim();
+    const subject = encodeURIComponent(`Consulta desde el portfolio de ${name}`);
+    const body = encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\n\n${message}`);
+
     formNote.style.color = 'var(--cyan)';
-    formNote.textContent = `> CIFRANDO PAYLOAD (AES-256) ... [HASH: 0x${pseudoHash}]`;
+    formNote.textContent = '> Preparando el mensaje en tu cliente de correo…';
     if (submitBtn) submitBtn.disabled = true;
     playCyberBeep(900, 'sine', 0.05, 0.03);
 
     setTimeout(() => {
-      formNote.textContent = `> TRANSMITIENDO PAQUETE SEGURO A CANAL PRINCIPAL...`;
-      playCyberBeep(1200, 'sine', 0.04, 0.03);
-    }, 400);
-
-    setTimeout(() => {
+      window.location.href = `mailto:canoadrianjavier@gmail.com?subject=${subject}&body=${body}`;
       formNote.style.color = 'var(--green)';
-      formNote.textContent = `[✓] TRANSMISIÓN RECIBIDA CON ÉXITO (HTTP 200 OK).\nGracias por contactar. Respuesta encriptada en breve.`;
-      playCyberBeep(1600, 'sine', 0.08, 0.05);
-      form.reset();
+      formNote.textContent = '[✓] Se abrió tu cliente de correo. Revisá el mensaje antes de enviarlo.';
+      playCyberBeep(1200, 'sine', 0.04, 0.03);
       if (submitBtn) submitBtn.disabled = false;
-    }, 900);
+    }, 250);
   });
 }
