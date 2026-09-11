@@ -41,6 +41,12 @@
 html {
   scroll-behavior: smooth;
   background-color: var(--bg);
+  color-scheme: dark;
+}
+
+section,
+[id] {
+  scroll-margin-top: 90px;
 }
 
 body {
@@ -86,6 +92,29 @@ canvas#net {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100001;
+  padding: 8px 12px;
+  background: var(--green);
+  color: #000;
+  font-family: var(--mono);
+  font-weight: 700;
+  transform: translateY(-150%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+:where(a, button, input, textarea):focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
 }
 
 ul {
@@ -1648,12 +1677,11 @@ section {
   color: var(--text-bright);
   font-family: var(--mono);
   font-size: 0.92rem;
-  transition: all 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.field input:focus,
-.field textarea:focus {
-  outline: none;
+.field input:focus-visible,
+.field textarea:focus-visible {
   border-color: var(--green);
   box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.15), 0 0 15px rgba(0, 255, 102, 0.2);
 }
@@ -1682,6 +1710,11 @@ section {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 24px;
+}
+
+.comms-box-notice {
+  border-color: rgba(255, 183, 0, 0.45);
+  box-shadow: inset 1px 0 0 var(--amber);
 }
 
 .comms-box h3 {
@@ -1750,6 +1783,7 @@ section {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 .privesc-modal-overlay.active {
